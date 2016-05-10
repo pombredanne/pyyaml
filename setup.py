@@ -5,8 +5,8 @@ import setuptools
 
 
 setuptools.setup(
-    name="PyYAML",
-    version="3.10",
+    name="yaml",
+    version="4.0.dev0",
     description="YAML parser and emitter for Python",
     long_description="""\
 YAML is a data serialization format designed for human readability
@@ -20,10 +20,8 @@ allow to represent an arbitrary Python object.
 
 PyYAML is applicable for a broad range of tasks from complex
 configuration files to object serialization and persistance.""",
-    author="Kirill Simonov",
-    author_email="xi@resolvent.net",
     license="MIT",
-    url="http://pyyaml.org/wiki/PyYAML",
+    url="https://github.com/dstufft/yaml",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
@@ -31,13 +29,12 @@ configuration files to object serialization and persistance.""",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.5",
         "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.0",
-        "Programming Language :: Python :: 3.1",
-        "Programming Language :: Python :: 3.2",
+        "Programming Language :: Python :: 3.3",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Text Processing :: Markup",
     ],
