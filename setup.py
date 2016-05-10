@@ -1,7 +1,6 @@
 #!/bin/env python
 
 import os.path
-import sys
 import setuptools
 
 
@@ -39,6 +38,6 @@ setuptools.setup(
         "Topic :: Text Processing :: Markup",
     ],
 
-    package_dir={"": {2: "lib", 3: "lib3"}[sys.version_info[0]]},
+    package_dir={"": "src"},
     packages=["yaml"],
 )
