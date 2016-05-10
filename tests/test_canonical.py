@@ -1,5 +1,7 @@
 
-import yaml, canonical
+import yaml
+
+from tests import canonical
 
 def test_canonical_scanner(canonical_filename, verbose=False):
     data = open(canonical_filename, 'rb').read()
@@ -33,8 +35,3 @@ def test_canonical_error(data_filename, canonical_filename, verbose=False):
 
 test_canonical_error.unittest = ['.data', '.canonical']
 test_canonical_error.skip = ['.empty']
-
-if __name__ == '__main__':
-    import test_appliance
-    test_appliance.run(globals())
-

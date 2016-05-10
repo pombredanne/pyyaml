@@ -1,6 +1,14 @@
 
 import yaml
-import codecs, io, tempfile, os, os.path
+import codecs, io, tempfile, os, os.path, sys
+
+if sys.version_info[0] == 3:
+    text_type = str
+    basestring = (str,)
+    StringIO = io.StringIO
+else:
+    text_type = unicode
+    from StringIO import StringIO
 
 def test_unicode_input(unicode_filename, verbose=False):
     data = open(unicode_filename, 'rb').read().decode('utf-8')
@@ -52,7 +60,7 @@ def test_unicode_output(unicode_filename, verbose=False):
     for allow_unicode in [False, True]:
         data1 = yaml.dump(value, allow_unicode=allow_unicode)
         for encoding in [None, 'utf-8', 'utf-16-be', 'utf-16-le']:
-            stream = io.StringIO()
+            stream = StringIO()
             yaml.dump(value, stream, encoding=encoding, allow_unicode=allow_unicode)
             data2 = stream.getvalue()
             data3 = yaml.dump(value, encoding=encoding, allow_unicode=allow_unicode)
@@ -78,19 +86,19 @@ def test_unicode_output(unicode_filename, verbose=False):
             for copy in [data1, data2, data3, data4]:
                 if copy is None:
                     continue
-                assert isinstance(copy, str)
+                assert isinstance(copy, basestring)
                 if allow_unicode:
                     try:
                         copy[4:].encode('ascii')
-                    except UnicodeEncodeError as exc:
+                    except (UnicodeDecodeError, UnicodeEncodeError) as exc:
                         if verbose:
                             print(exc)
                     else:
                         raise AssertionError("expected an exception")
                 else:
                     copy[4:].encode('ascii')
-            assert isinstance(data1, str), (type(data1), encoding)
-            assert isinstance(data2, str), (type(data2), encoding)
+            assert isinstance(data1, basestring)
+            assert isinstance(data2, basestring)
 
 test_unicode_output.unittest = ['.unicode']
 
@@ -99,23 +107,25 @@ def test_file_output(unicode_filename, verbose=False):
     handle, filename = tempfile.mkstemp()
     os.close(handle)
     try:
-        stream = io.StringIO()
+        stream = StringIO()
         yaml.dump(data, stream, allow_unicode=True)
         data1 = stream.getvalue()
+        if sys.version_info[0] == 2:
+            data1 = data1.decode("utf8")
         stream = io.BytesIO()
         yaml.dump(data, stream, encoding='utf-16-le', allow_unicode=True)
         data2 = stream.getvalue().decode('utf-16-le')[1:]
-        stream = open(filename, 'w', encoding='utf-16-le')
+        stream = codecs.open(filename, 'w', encoding='utf-16-le')
         yaml.dump(data, stream, allow_unicode=True)
         stream.close()
-        data3 = open(filename, 'r', encoding='utf-16-le').read()
+        data3 = codecs.open(filename, 'r', encoding='utf-16-le').read()
         stream = open(filename, 'wb')
         yaml.dump(data, stream, encoding='utf-8', allow_unicode=True)
         stream.close()
-        data4 = open(filename, 'r', encoding='utf-8').read()
-        assert data1 == data2, (data1, data2)
-        assert data1 == data3, (data1, data3)
-        assert data1 == data4, (data1, data4)
+        data4 = codecs.open(filename, 'r', encoding='utf-8').read()
+        assert data1 == data2
+        assert data1 == data3
+        assert data1 == data4
     finally:
         if os.path.exists(filename):
             os.unlink(filename)
@@ -127,7 +137,7 @@ def test_unicode_transfer(unicode_filename, verbose=False):
     for encoding in [None, 'utf-8', 'utf-16-be', 'utf-16-le']:
         input = data
         if encoding is not None:
-            input = ('\ufeff'+input).encode(encoding)
+            input = (u'\ufeff'+input).encode(encoding)
         output1 = yaml.emit(yaml.parse(input), allow_unicode=True)
         if encoding is None:
             stream = io.StringIO()
@@ -135,16 +145,11 @@ def test_unicode_transfer(unicode_filename, verbose=False):
             stream = io.BytesIO()
         yaml.emit(yaml.parse(input), stream, allow_unicode=True)
         output2 = stream.getvalue()
-        assert isinstance(output1, str), (type(output1), encoding)
+        assert isinstance(output1, basestring)
         if encoding is None:
-            assert isinstance(output2, str), (type(output1), encoding)
+            assert isinstance(output2, text_type)
         else:
-            assert isinstance(output2, bytes), (type(output1), encoding)
+            assert isinstance(output2, bytes)
             output2.decode(encoding)
 
 test_unicode_transfer.unittest = ['.unicode']
-
-if __name__ == '__main__':
-    import test_appliance
-    test_appliance.run(globals())
-

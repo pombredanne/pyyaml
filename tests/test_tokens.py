@@ -70,8 +70,3 @@ def test_scanner(data_filename, canonical_filename, verbose=False):
                 pprint.pprint(tokens)
 
 test_scanner.unittest = ['.data', '.canonical']
-
-if __name__ == '__main__':
-    import test_appliance
-    test_appliance.run(globals())
-

@@ -44,8 +44,3 @@ def test_recursive(recursive_filename, verbose=False):
             print(output2)
 
 test_recursive.unittest = ['.recursive']
-
-if __name__ == '__main__':
-    import test_appliance
-    test_appliance.run(globals())
-

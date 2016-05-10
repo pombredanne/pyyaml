@@ -41,29 +41,7 @@ CLASSIFIERS = [
 
 import sys
 
-from distutils.core import setup, Command
-
-
-class test(Command):
-
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        build_cmd = self.get_finalized_command('build')
-        build_cmd.run()
-        sys.path.insert(0, build_cmd.build_lib)
-        if sys.version_info[0] < 3:
-            sys.path.insert(0, 'tests/lib')
-        else:
-            sys.path.insert(0, 'tests/lib3')
-        import test_all
-        test_all.main([])
+from distutils.core import setup
 
 
 if __name__ == '__main__':
@@ -83,8 +61,4 @@ if __name__ == '__main__':
 
         package_dir={'': {2: 'lib', 3: 'lib3'}[sys.version_info[0]]},
         packages=['yaml'],
-
-        cmdclass={
-            'test': test,
-        },
     )

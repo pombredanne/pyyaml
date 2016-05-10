@@ -25,8 +25,3 @@ def test_marks(marks_filename, verbose=False):
         assert data[len(pointer)-1] == '*', data[len(pointer)-1]
 
 test_marks.unittest = ['.marks']
-
-if __name__ == '__main__':
-    import test_appliance
-    test_appliance.run(globals())
-
