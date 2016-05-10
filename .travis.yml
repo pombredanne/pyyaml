@@ -4,6 +4,10 @@ cache:
     directories:
         - $HOME/.cache/pip
 
+branches:
+  only:
+    - master
+
 matrix:
     include:
         - python: 2.6
