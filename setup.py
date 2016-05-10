@@ -40,4 +40,8 @@ setuptools.setup(
 
     package_dir={"": "src"},
     packages=["yaml"],
+
+    install_requires=[
+        "six",
+    ],
 )

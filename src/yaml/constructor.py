@@ -1,6 +1,13 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 
 __all__ = ['BaseConstructor', 'SafeConstructor', 'Constructor',
     'ConstructorError']
+
+import six
 
 from .error import *
 from .nodes import *
@@ -10,7 +17,7 @@ import collections, datetime, base64, binascii, re, sys, types
 class ConstructorError(MarkedYAMLError):
     pass
 
-class BaseConstructor:
+class BaseConstructor(object):
 
     yaml_constructors = {}
     yaml_multi_constructors = {}
@@ -161,7 +168,7 @@ class SafeConstructor(BaseConstructor):
             for key_node, value_node in node.value:
                 if key_node.tag == 'tag:yaml.org,2002:value':
                     return self.construct_scalar(value_node)
-        return super().construct_scalar(node)
+        return super(SafeConstructor, self).construct_scalar(node)
 
     def flatten_mapping(self, node):
         merge = []
@@ -201,7 +208,7 @@ class SafeConstructor(BaseConstructor):
     def construct_mapping(self, node, deep=False):
         if isinstance(node, MappingNode):
             self.flatten_mapping(node)
-        return super().construct_mapping(node, deep=deep)
+        return super(SafeConstructor, self).construct_mapping(node, deep=deep)
 
     def construct_yaml_null(self, node):
         self.construct_scalar(node)
@@ -515,7 +522,7 @@ class Constructor(SafeConstructor):
         if '.' in name:
             module_name, object_name = name.rsplit('.', 1)
         else:
-            module_name = 'builtins'
+            module_name = '__builtin__' if six.PY2 else 'builtins'
             object_name = name
         try:
             __import__(module_name)
@@ -683,4 +690,3 @@ Constructor.add_multi_constructor(
 Constructor.add_multi_constructor(
     'tag:yaml.org,2002:python/object/new:',
     Constructor.construct_python_object_new)
-

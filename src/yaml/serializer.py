@@ -1,3 +1,8 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 
 __all__ = ['Serializer', 'SerializerError']
 
@@ -108,4 +113,3 @@ class Serializer:
                     self.serialize_node(value, node, key)
                 self.emit(MappingEndEvent())
             self.ascend_resolver()
-

@@ -1,3 +1,9 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import six
 
 from .error import *
 
@@ -105,7 +111,7 @@ def emit(events, stream=None, Dumper=Dumper,
     """
     getvalue = None
     if stream is None:
-        stream = io.StringIO()
+        stream = six.StringIO()
         getvalue = stream.getvalue
     dumper = Dumper(stream, canonical=canonical, indent=indent, width=width,
             allow_unicode=allow_unicode, line_break=line_break)
@@ -276,7 +282,9 @@ class YAMLObjectMetaclass(type):
             cls.yaml_loader.add_constructor(cls.yaml_tag, cls.from_yaml)
             cls.yaml_dumper.add_representer(cls, cls.to_yaml)
 
-class YAMLObject(metaclass=YAMLObjectMetaclass):
+
+@six.add_metaclass(YAMLObjectMetaclass)
+class YAMLObject(object):
     """
     An object that can dump itself to a YAML stream
     and load itself from a YAML stream.

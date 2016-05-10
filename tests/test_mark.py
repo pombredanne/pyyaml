@@ -1,5 +1,6 @@
 
 import yaml
+import six
 
 def test_marks(marks_filename, verbose=False):
     inputs = open(marks_filename, 'r').read().split('---\n')[1:]
@@ -18,7 +19,7 @@ def test_marks(marks_filename, verbose=False):
         snippet = mark.get_snippet(indent=2, max_length=79)
         if verbose:
             print(snippet)
-        assert isinstance(snippet, str), type(snippet)
+        assert isinstance(snippet, six.text_type)
         assert snippet.count('\n') == 1, snippet.count('\n')
         data, pointer = snippet.split('\n')
         assert len(data) < 82, len(data)

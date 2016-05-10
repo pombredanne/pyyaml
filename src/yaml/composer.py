@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 __all__ = ['Composer', 'ComposerError']
 
@@ -136,4 +140,3 @@ class Composer:
         end_event = self.get_event()
         node.end_mark = end_event.end_mark
         return node
-

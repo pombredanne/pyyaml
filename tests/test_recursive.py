@@ -1,7 +1,7 @@
 
 import yaml
 
-class AnInstance:
+class AnInstance(object):
 
     def __init__(self, foo, bar):
         self.foo = foo

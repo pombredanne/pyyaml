@@ -1,3 +1,8 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 
 __all__ = ['BaseRepresenter', 'SafeRepresenter', 'Representer',
     'RepresenterError']
@@ -5,7 +10,10 @@ __all__ = ['BaseRepresenter', 'SafeRepresenter', 'Representer',
 from .error import *
 from .nodes import *
 
-import datetime, sys, copyreg, types, base64
+import datetime, sys, types, base64
+import six
+
+from six.moves import copyreg
 
 class RepresenterError(YAMLError):
     pass
@@ -56,7 +64,7 @@ class BaseRepresenter:
                 elif None in self.yaml_representers:
                     node = self.yaml_representers[None](self, data)
                 else:
-                    node = ScalarNode(None, str(data))
+                    node = ScalarNode(None, six.text_type(data))
         #if alias_key is not None:
         #    self.represented_objects[alias_key] = node
         return node
@@ -134,7 +142,7 @@ class SafeRepresenter(BaseRepresenter):
     def ignore_aliases(self, data):
         if data in [None, ()]:
             return True
-        if isinstance(data, (str, bytes, bool, int, float)):
+        if isinstance(data, (six.text_type, bytes, bool, int, float)):
             return True
 
     def represent_none(self, data):
@@ -158,7 +166,7 @@ class SafeRepresenter(BaseRepresenter):
         return self.represent_scalar('tag:yaml.org,2002:bool', value)
 
     def represent_int(self, data):
-        return self.represent_scalar('tag:yaml.org,2002:int', str(data))
+        return self.represent_scalar('tag:yaml.org,2002:int', six.text_type(data))
 
     inf_value = 1e300
     while repr(inf_value) != repr(inf_value*inf_value):
@@ -213,7 +221,7 @@ class SafeRepresenter(BaseRepresenter):
         return self.represent_scalar('tag:yaml.org,2002:timestamp', value)
 
     def represent_datetime(self, data):
-        value = data.isoformat(' ')
+        value = data.isoformat(str(' '))
         return self.represent_scalar('tag:yaml.org,2002:timestamp', value)
 
     def represent_yaml_object(self, tag, data, cls, flow_style=None):
@@ -229,10 +237,10 @@ class SafeRepresenter(BaseRepresenter):
 SafeRepresenter.add_representer(type(None),
         SafeRepresenter.represent_none)
 
-SafeRepresenter.add_representer(str,
+SafeRepresenter.add_representer(six.text_type,
         SafeRepresenter.represent_str)
 
-SafeRepresenter.add_representer(bytes,
+SafeRepresenter.add_representer(six.binary_type,
         SafeRepresenter.represent_binary)
 
 SafeRepresenter.add_representer(bool,
@@ -240,6 +248,9 @@ SafeRepresenter.add_representer(bool,
 
 SafeRepresenter.add_representer(int,
         SafeRepresenter.represent_int)
+
+if six.PY2:
+    SafeRepresenter.add_representer(long, SafeRepresenter.represent_int)
 
 SafeRepresenter.add_representer(float,
         SafeRepresenter.represent_float)
@@ -371,4 +382,3 @@ Representer.add_representer(types.ModuleType,
 
 Representer.add_multi_representer(object,
         Representer.represent_object)
-

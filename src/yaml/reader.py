@@ -1,3 +1,8 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 # This module contains abstractions for the input stream. You don't have to
 # looks further, there are no pretty code.
 #
@@ -20,6 +25,7 @@ __all__ = ['Reader', 'ReaderError']
 from .error import YAMLError, Mark
 
 import codecs, re
+import six
 
 class ReaderError(YAMLError):
 
@@ -69,11 +75,12 @@ class Reader(object):
         self.index = 0
         self.line = 0
         self.column = 0
-        if isinstance(stream, str):
+
+        if isinstance(stream, six.text_type):
             self.name = "<unicode string>"
             self.check_printable(stream)
             self.buffer = stream+'\0'
-        elif isinstance(stream, bytes):
+        elif isinstance(stream, six.binary_type):
             self.name = "<byte string>"
             self.raw_buffer = stream
             self.determine_encoding()
@@ -189,4 +196,3 @@ class Reader(object):
 #    psyco.bind(Reader)
 #except ImportError:
 #    pass
-
