@@ -1,5 +1,10 @@
+4.0 (unreleased)
+----------------
 
-For a complete Subversion changelog, see 'http://pyyaml.org/log/pyyaml'.
+* Fork PyYaml as "yaml".
+* Remove Cython bindings to libyaml.
+* Unify Python 2.x and Python 3.x test suite.
+
 
 3.10 (2011-05-30)
 -----------------
@@ -136,5 +141,4 @@ For a complete Subversion changelog, see 'http://pyyaml.org/log/pyyaml'.
 
 * Initial release.  The version number reflects the codename
   of the project (PyYAML 3000) and differenciates it from
-  the abandoned PyYaml module. 
-
+  the abandoned PyYaml module.
