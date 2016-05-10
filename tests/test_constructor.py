@@ -1,6 +1,7 @@
 
 import yaml
 import pprint
+import six
 
 import datetime
 import yaml.tokens
@@ -209,8 +210,10 @@ def _serialize_value(data):
         return repr(data.utctimetuple())
     elif isinstance(data, float) and data != data:
         return '?'
+    elif six.PY2 and isinstance(data, six.binary_type):
+        return six.text_type(data, encoding="utf8")
     else:
-        return str(data)
+        return six.text_type(data)
 
 def test_constructor_types(data_filename, code_filename, verbose=False):
     native1 = None
@@ -230,7 +233,7 @@ def test_constructor_types(data_filename, code_filename, verbose=False):
             print(_serialize_value(native1))
             print("SERIALIZED NATIVE2:")
             print(_serialize_value(native2))
-        assert _serialize_value(native1) == _serialize_value(native2), (native1, native2)
+        assert _serialize_value(native1) == _serialize_value(native2)
     finally:
         if verbose:
             print("NATIVE1:")

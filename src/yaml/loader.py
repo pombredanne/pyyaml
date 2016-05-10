@@ -1,3 +1,8 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 
 __all__ = ['BaseLoader', 'SafeLoader', 'Loader']
 
@@ -37,4 +42,3 @@ class Loader(Reader, Scanner, Parser, Composer, Constructor, Resolver):
         Composer.__init__(self)
         Constructor.__init__(self)
         Resolver.__init__(self)
-

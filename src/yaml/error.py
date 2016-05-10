@@ -1,7 +1,12 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 
 __all__ = ['Mark', 'YAMLError', 'MarkedYAMLError']
 
-class Mark(object):
+class Mark:
 
     def __init__(self, name, index, line, column, buffer, pointer):
         self.name = name
@@ -16,7 +21,7 @@ class Mark(object):
             return None
         head = ''
         start = self.pointer
-        while start > 0 and self.buffer[start-1] not in u'\0\r\n\x85\u2028\u2029':
+        while start > 0 and self.buffer[start-1] not in '\0\r\n\x85\u2028\u2029':
             start -= 1
             if self.pointer-start > max_length/2-1:
                 head = ' ... '
@@ -24,13 +29,13 @@ class Mark(object):
                 break
         tail = ''
         end = self.pointer
-        while end < len(self.buffer) and self.buffer[end] not in u'\0\r\n\x85\u2028\u2029':
+        while end < len(self.buffer) and self.buffer[end] not in '\0\r\n\x85\u2028\u2029':
             end += 1
             if end-self.pointer > max_length/2-1:
                 tail = ' ... '
                 end -= 5
                 break
-        snippet = self.buffer[start:end].encode('utf-8')
+        snippet = self.buffer[start:end]
         return ' '*indent + head + snippet + tail + '\n'  \
                 + ' '*(indent+self.pointer-start+len(head)) + '^'
 
@@ -72,4 +77,3 @@ class MarkedYAMLError(YAMLError):
         if self.note is not None:
             lines.append(self.note)
         return '\n'.join(lines)
-

@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 # Scanner produces tokens of the following types:
 # STREAM-START
@@ -25,6 +29,8 @@
 #
 
 __all__ = ['Scanner', 'ScannerError']
+
+import six
 
 from .error import MarkedYAMLError
 from .tokens import *
@@ -314,7 +320,7 @@ class Scanner:
         # Remove the saved possible key position at the current flow level.
         if self.flow_level in self.possible_simple_keys:
             key = self.possible_simple_keys[self.flow_level]
-            
+
             if key.required:
                 raise ScannerError("while scanning a simple key", key.mark,
                         "could not found expected ':'", self.get_mark())
@@ -363,11 +369,11 @@ class Scanner:
 
         # Read the token.
         mark = self.get_mark()
-        
+
         # Add STREAM-START.
         self.tokens.append(StreamStartToken(mark, mark,
             encoding=self.encoding))
-        
+
 
     def fetch_stream_end(self):
 
@@ -381,7 +387,7 @@ class Scanner:
 
         # Read the token.
         mark = self.get_mark()
-        
+
         # Add STREAM-END.
         self.tokens.append(StreamEndToken(mark, mark))
 
@@ -389,7 +395,7 @@ class Scanner:
         self.done = True
 
     def fetch_directive(self):
-        
+
         # Set the current intendation to -1.
         self.unwind_indent(-1)
 
@@ -516,7 +522,7 @@ class Scanner:
         self.tokens.append(BlockEntryToken(start_mark, end_mark))
 
     def fetch_key(self):
-        
+
         # Block context needs additional checks.
         if not self.flow_level:
 
@@ -566,7 +572,7 @@ class Scanner:
 
         # It must be a part of a complex key.
         else:
-            
+
             # Block context needs additional checks.
             # (Do we really need them? They will be catched by the parser
             # anyway.)
@@ -1018,14 +1024,14 @@ class Scanner:
                 # Unfortunately, folding rules are ambiguous.
                 #
                 # This is the folding according to the specification:
-                
+
                 if folded and line_break == '\n'    \
                         and leading_non_space and self.peek() not in ' \t':
                     if not breaks:
                         chunks.append(' ')
                 else:
                     chunks.append(line_break)
-                
+
                 # This is Clark Evans's interpretation (also in the spec
                 # examples):
                 #
@@ -1214,7 +1220,7 @@ class Scanner:
                                     "expected escape sequence of %d hexdecimal numbers, but found %r" %
                                         (length, self.peek(k)), self.get_mark())
                     code = int(self.prefix(length), 16)
-                    chunks.append(chr(code))
+                    chunks.append(six.unichr(code))
                     self.forward(length)
                 elif ch in '\r\n\x85\u2028\u2029':
                     self.scan_line_break()
@@ -1445,4 +1451,3 @@ class Scanner:
 #    psyco.bind(Scanner)
 #except ImportError:
 #    pass
-

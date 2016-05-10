@@ -110,8 +110,6 @@ def test_file_output(unicode_filename, verbose=False):
         stream = StringIO()
         yaml.dump(data, stream, allow_unicode=True)
         data1 = stream.getvalue()
-        if sys.version_info[0] == 2:
-            data1 = data1.decode("utf8")
         stream = io.BytesIO()
         yaml.dump(data, stream, encoding='utf-16-le', allow_unicode=True)
         data2 = stream.getvalue().decode('utf-16-le')[1:]

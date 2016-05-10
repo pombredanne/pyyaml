@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 # Emitter expects events obeying the following grammar:
 # stream ::= STREAM-START document* STREAM-END
@@ -7,6 +11,8 @@
 # mapping ::= MAPPING-START (node node)* MAPPING-END
 
 __all__ = ['Emitter', 'EmitterError']
+
+import six
 
 from .error import YAMLError
 from .events import *
@@ -159,7 +165,11 @@ class Emitter:
 
     def expect_stream_start(self):
         if isinstance(self.event, StreamStartEvent):
-            if self.event.encoding and not hasattr(self.stream, 'encoding'):
+            if (self.event.encoding
+                    and not (
+                        (six.PY3 and hasattr(self.stream, 'encoding'))
+                        or (six.PY2
+                            and getattr(self.stream, "encoding", None)))):
                 self.encoding = self.event.encoding
             self.write_stream_start()
             self.state = self.expect_first_document_start
@@ -671,7 +681,7 @@ class Emitter:
             # Check for indicators.
             if index == 0:
                 # Leading indicators are special characters.
-                if ch in '#,[]{}&*!|>\'\"%@`': 
+                if ch in '#,[]{}&*!|>\'\"%@`':
                     flow_indicators = True
                     block_indicators = True
                 if ch in '?:':
@@ -980,7 +990,7 @@ class Emitter:
         hints = ''
         if text:
             if text[0] in ' \n\x85\u2028\u2029':
-                hints += str(self.best_indent)
+                hints += six.text_type(self.best_indent)
             if text[-1] not in '\n\x85\u2028\u2029':
                 hints += '-'
             elif len(text) == 1 or text[-2] in '\n\x85\u2028\u2029':
@@ -1134,4 +1144,3 @@ class Emitter:
                 spaces = (ch == ' ')
                 breaks = (ch in '\n\x85\u2028\u2029')
             end += 1
-
