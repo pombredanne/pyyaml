@@ -1,25 +1,22 @@
 #!/bin/env python
 
+import os.path
 import sys
 import setuptools
+
+
+ROOT = os.path.dirname(os.path.abspath(__file__))
+
+
+with open(os.path.join(ROOT, "README.rst")) as fp:
+    long_description = fp.read()
 
 
 setuptools.setup(
     name="yaml",
     version="4.0.dev0",
     description="YAML parser and emitter for Python",
-    long_description="""\
-YAML is a data serialization format designed for human readability
-and interaction with scripting languages.  PyYAML is a YAML parser
-and emitter for Python.
-
-PyYAML features a complete YAML 1.1 parser, Unicode support, pickle
-support, capable extension API, and sensible error messages.  PyYAML
-supports standard YAML tags and provides Python-specific tags that
-allow to represent an arbitrary Python object.
-
-PyYAML is applicable for a broad range of tasks from complex
-configuration files to object serialization and persistance.""",
+    long_description=long_description,
     license="MIT",
     url="https://github.com/dstufft/yaml",
     classifiers=[
