@@ -10,12 +10,6 @@ from dumper import *
 
 __version__ = '3.10'
 
-try:
-    from cyaml import *
-    __with_libyaml__ = True
-except ImportError:
-    __with_libyaml__ = False
-
 def scan(stream, Loader=Loader):
     """
     Scan a YAML stream and produce scanning tokens.
@@ -312,4 +306,3 @@ class YAMLObject(object):
         return dumper.represent_yaml_object(cls.yaml_tag, data, cls,
                 flow_style=cls.yaml_flow_style)
     to_yaml = classmethod(to_yaml)
-
