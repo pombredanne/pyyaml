@@ -1,7 +1,14 @@
-include README LICENSE CHANGES setup.py
-recursive-include lib/yaml *.py
-recursive-include lib3/yaml *.py
-recursive-include examples *.py *.cfg *.yaml
-recursive-include tests/data *
-recursive-include tests/lib *.py
-recursive-include tests/lib3 *.py
+include CHANGES LICENSE
+include tox.ini
+
+recursive-include lib *.py
+recursive-include lib3 *.py
+
+recursive-include examples *.cfg *.py *.yaml
+
+recursive-include tests *.py
+recursive-include tests/data *.*
+
+exclude .travis.yml
+
+prune .travis
